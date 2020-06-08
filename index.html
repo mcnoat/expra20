@@ -103,10 +103,10 @@
 				</ol>
 				`,
 				placeholder: 'Beispiel-Code von „Elke Alena Meier“: E0405M',
-				name: 'subj_id'}
+				name: 'subj_code'}
 			]
 		};
-		widgets.push(subj_code);
+		widgets.splice(0, 0, subj_code);
 		
 		attract_instr = {
 			type: 'instructions',
@@ -194,13 +194,19 @@
 		}
 		
 		function genConfStim() {
-			let distractor = '',
+			let aplphabet = '',
+				distractor = '',
 				fav_letter = '',
 				letter_i = 0,
 				conf_stim = [],
 				two_letter = [];
 			
+			alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split("");
 			fav_letter = 'M';
+			let test_letter = function() {
+				subj_code = JSON.parse(jsPsych.data.get().filter({trial_type: 'survey-text'}).select('responses').values).subj_code;
+				return subj_code[0];
+			};
 			letter_i = alphabet.indexOf(fav_letter);
 			alphabet.splice(letter_i, 1); //kick out fav_letter
 			
@@ -223,7 +229,7 @@
 			timeline: genConfStim(),
 			choices: ['x', 'n']
 		};
-		timeline.push(conf_rt);
+		timeline.splice(1, 0, conf_rt);
 		
 		jsPsych.init({
 			timeline: timeline,

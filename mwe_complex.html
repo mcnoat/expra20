@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Expra experiment</title>
+		<script src="jsPsych/jspsych.js"></script>
+		<script src="jsPsych/plugins/jspsych-html-keyboard-response.js"></script>
+		<script src="jsPsych/plugins/jspsych-instructions.js"></script>
+		<script src="jsPsych/plugins/jspsych-survey-html-form.js"></script>
+		<script src="jsPsych/plugins/jspsych-survey-multi-choice.js"></script>
+		<script src="jsPsych/plugins/jspsych-survey-text.js"></script>
+		<link href="jsPsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+	</head>
+	<body></body>
+	<script>
+//timeline is an array which is loaded with one trial after the other and initiated at the end
+let timeline = [],
+	letter_display = {},
+	letter_survey = {},
+	test_procedure = {};
+
+letter_survey = {
+    type: "survey-text",
+    questions: [
+        {prompt: "What is your favorite letter?", name:"favorite"}
+                    ],
+        }
+timeline.push(letter_survey);
+
+//array with letters of the alphabet as entries
+let stim_arr = [],
+	stim = {},
+	alphabet = '',
+	distractor = '',
+	fav_letter = '',
+	stim_str = '';
+alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+stim_arr = []
+
+//the following loop tries to create an array for the timeline parameter of a nested timeline
+//see https://www.jspsych.org/overview/timeline/#nested-timelines for further details
+for (let i=0; i<alphabet.length; i++) {
+	//in the console the following extracts the response from the text box
+	fav_letter = JSON.parse(jsPsych.data.get().filter({trial_type: 'survey-text'}).select('responses').values).favorite;
+	distractor = alphabet[i];
+	stim_str = fav_letter + '&emsp;' + distractor;
+	stim = {stimulus: stim_str};
+	stim_arr.push(stim);
+}
+
+letter_display = {
+    type: 'html-keyboard-response',
+    timeline: stim_arr,
+};
+timeline.push(letter_display);
+
+jsPsych.init({
+    timeline: timeline
+})
+	</script>
+</html>
