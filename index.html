@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Expra experiment</title>
+		<script src="jsPsych/jspsych.js"></script>
+		<script src="jsPsych/plugins/jspsych-html-keyboard-response.js"></script>
+		<script src="jsPsych/plugins/jspsych-instructions.js"></script>
+		<script src="jsPsych/plugins/jspsych-survey-html-form.js"></script>
+		<script src="jsPsych/plugins/jspsych-survey-multi-choice.js"></script>
+		<script src="jsPsych/plugins/jspsych-survey-text.js"></script>
+		<link href="jspsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+	</head>
+	<body></body>
+	<script>
+		let letter_display, letter_survey, test_procedure, timeline;
+timeline = [];
+
+letter_survey = {
+    type: "survey-text",
+    questions: [
+        {prompt: "What is your favorite letter?", name:"favorite"}
+                    ],
+        }
+timeline.push(letter_survey);
+
+letter_display = {
+    type: 'html-keyboard-response',
+    stimulus: jsPsych.timelineVariable('stimulus'),
+};
+
+function simpFunc() {
+	let y = function() {
+		return JSON.parse(jsPsych.data.get().filter({trial_type: 'survey-text'}).select('responses').values).favorite;
+		}
+	stim = [{stimulus: y}]
+	return stim
+}
+
+test_procedure = {
+    type: 'html-keyboard-response',
+    timeline: simpFunc()
+	};
+timeline.push(test_procedure);
+
+jsPsych.init({
+    timeline: timeline
+})
+	</script>
+</html>
