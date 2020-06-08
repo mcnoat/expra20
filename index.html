@@ -9,42 +9,229 @@
 		<script src="jsPsych/plugins/jspsych-survey-html-form.js"></script>
 		<script src="jsPsych/plugins/jspsych-survey-multi-choice.js"></script>
 		<script src="jsPsych/plugins/jspsych-survey-text.js"></script>
-		<link href="jsPsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+		<link href="jspsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
 	</head>
 	<body></body>
 	<script>
-		let letter_display, letter_survey, test_procedure, timeline;
-timeline = [];
-
-letter_survey = {
-    type: "survey-text",
-    questions: [
-        {prompt: "What is your favorite letter?", name:"favorite"}
-                    ],
-        }
-timeline.push(letter_survey);
-
-letter_display = {
-    type: 'html-keyboard-response',
-    stimulus: jsPsych.timelineVariable('stimulus'),
-};
-
-function simpFunc() {
-	let y = function() {
-		return JSON.parse(jsPsych.data.get().filter({trial_type: 'survey-text'}).select('responses').values).favorite;
+		let age = {},
+			attract_instr = {},
+			attract_rating = {},
+			conf_instruct = {},
+			conf_rt = {},
+			gender = {},
+			language = {},
+			latin = {},
+			self_esteem = {},
+			subj_code = {},
+			welcome = {},
+			scale = [],
+			timeline = [],
+			widgets = [],
+			subj_id = '';
+		
+		function saveData(name, data){
+  			let xhr = new XMLHttpRequest();
+  			xhr.open('POST', 'write_data.php'); // 'write_data.php' is the path to the php file described above.
+  			xhr.setRequestHeader('Content-Type', 'application/json');
+  			xhr.send(JSON.stringify({filename: name, filedata: data}));
 		}
-	stim = [{stimulus: y}]
-	return stim
-}
+		
+		subj_id = jsPsych.randomization.randomID()
+		
+		welcome = {
+			type: 'instructions',
+			pages: [`
+				Willkommen zum Experiment vom Expra B!<br>
+				Drücken Sie die rechte Pfeiltaste, um mit dem Experiment fort zu fahren.
+				`]
+		};
+		widgets.push(welcome);
 
-test_procedure = {
-    type: 'html-keyboard-response',
-    timeline: simpFunc()
-	};
-timeline.push(test_procedure);
-
-jsPsych.init({
-    timeline: timeline
-})
+		age = {
+			type: "survey-text",
+			questions: [
+					{prompt: "Wie alt sind Sie?",
+					placeholder: 'z.B. 20',
+					name: 'age'}
+				],
+		};
+		widgets.push(age);	
+		
+		gender = {
+			type: "survey-multi-choice",
+			questions: [
+				{prompt: `<p>Zu welchem Geschlecht fühlen Sie sich zugehörig?<br>
+					Unter "divers" verstehen wir hier sämtliche Geschlechtsidentitäten, die nicht in das "männlich-weiblich"-Schema passen.</p>`,
+				name: "gender",
+				options: ["männlich", "weiblich", "divers"]}
+				]
+		};
+		widgets.push(gender);
+		
+		language = {
+			type: 'survey-text',
+			questions: [
+					{prompt: 'Was ist Ihre Muttersprache?',
+					placeholder: 'z.B. deutsch, englisch, chinesisch...',
+					name: 'language'}
+				]
+		};
+		widgets.push(language);
+		
+		latin = {
+			type: 'survey-multi-choice',
+			questions: [
+					{prompt: 'Benutzt Ihre Muttersprache die Buchstaben A bis Z aus dem lateinisch-römischen Alphabet?',
+					options: ['ja', 'nein']
+					}
+				],
+			name: 'latin'
+		};
+		widgets.push(latin);
+		
+		subj_code = {
+			type: 'survey-text',
+			questions: [
+				{prompt: `
+				<p>Im Folgenden bitten wir Sie einen sechsstelligen persönlichen Code zu erstellen, den Sie durch Beantwortung der nachstehenden Fragen jederzeit wieder generieren könnten.</p>
+				<ol>
+					<li>Wie ist der Anfangsbuchstabe Ihres ersten Vornamens? z.B. bei Elke Alena Meier ein „E“</li>
+					<li>Wie lautet Ihr Geburtsdatum?
+						Geben Sie nur das Datum des Tages an, z.B. bei 04.03.2001 wäre es „04“</li>
+					<li>Aus wie vielen Buchstaben besteht Ihr Nachname? z.B. „Meier“ hat 05 Buchstaben</li>
+					<li>Wie ist der Anfangsbuchstaben Ihres Nachnamens? z.B. „Meier“ wäre ein „M“</li>
+				</ol>
+				`,
+				placeholder: 'Beispiel-Code von „Elke Alena Meier“: E0405M',
+				name: 'subj_id'}
+			]
+		};
+		widgets.push(subj_code);
+		
+		attract_instr = {
+			type: 'instructions',
+			pages: [`
+				<p><b>Bitte lesen Sie sich die folgenden Instruktionen aufmerksam durch!</b></p>
+				<p>Im Folgenden wird es um Ihr ästhetisches Empfinden in Bezug auf einfache visuelle Reize gehen.
+				In diesem Fall haben wir Buchstaben gewählt.
+				Wahrscheinlich sind Sie es nicht gewohnt, Buchstaben zu bewerten.
+				Wir möchten Sie aber trotzdem darum bitten, da Studien gezeigt haben, dass die spätere Erfassung menschlicher Gedanken und Emotionen dadurch erleichtert wird.
+				Im Folgenden finden Sie die einzelnen Buchstaben des Alphabets.
+				Schreiben Sie bitte hinter jedem Buchstaben eine Zahl von 1 bis 6.
+				Hiermit drücken Sie aus, wie sehr Ihnen der jeweilige Buchstabe gefällt ( <b>1 = gefällt mir ganz und gar nicht</b>, <b>6 = gefällt mir sehr</b>).<br>
+				Entscheiden Sie bitte bei jedem Buchstaben spontan, also ohne lange zu überlegen.</p>
+				<p>Nachdem Sie diese Instruktionen aufmerksam gelesen haben, drücken Sie bitte die rechte Pfeiltaste, um fort zu fahren.</p>
+				`],
+		};
+		widgets.push(attract_instr);
+		
+		let alphabet = '';
+		
+		alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+		for (i=0; i<26; i++){
+			
+		}
+		
+		attract_rating = {
+			
+		}
+		
+		scale = ['Trifft gar nicht zu', 'Trifft eher nicht zu', 'Trifft eher zu', 'Trifft voll und ganz zu']
+		self_esteem = {
+			type: 'survey-multi-choice',
+			questions: [
+				{prompt: '<b>Alles in allem bin ich mit mir selbst zufrieden.</b>',
+				name: 'rosenberg01'},
+				{prompt: '<b>Hin und wieder denke ich, dass ich gar nichts tauge.</b>',
+				name: 'rosenberg02'},
+				{prompt: '<b>Ich besitze eine Reihe guter Eigenschaften.</b>',
+				name: 'rosenberg03'},
+				{prompt: '<b>Ich kann vieles genauso gut wie die meisten anderen Menschen auch.</b>',
+				name: 'rosenberg04'},
+				{prompt: '<b>Ich fürchte, es gibts nicht viel, worauf ich Stolz sein kann.</b>',
+				name: 'rosenberg05'},
+				{prompt: '<b>Ich fühle mich von Zeit zu Zeit richtig nutzlos.</b>',
+				name: 'rosenberg06'},
+				{prompt: '<b>Ich halte mich für einen wertvollen Menschen, jedenfalls bin ich nicht weniger wertvoll als andere auch.</b>',
+				name: 'rosenberg07'},
+				{prompt: '<b>Ich wünschte, ich könnte vor mir selbst mehr Achtung haben.</b>',
+				name: 'rosenberg08'},
+				{prompt: '<b>Alles in allem neige ich dazu, mich für einen Versager zu halten.</b>',
+				name: 'rosenberg09'},
+				{prompt: '<b>Ich habe eine positive Einstellung zu mir selbst gefunden.</b>',
+				name: 'rosenberg10'}
+			],
+			randomize_question_order: true
+		};
+		for (const question of self_esteem['questions']){
+			question['options'] = scale
+		}
+		widgets.push(self_esteem);
+		
+		conf_instr = {
+			type: 'instructions',
+			pages: [`
+				<p>In dem folgenden Abschnitt des Experiments werden Ihnen [  ] und  Buchstaben für einen kurzen Augenblick präsentiert werden.
+				Pro Durchgang wird es einen Buchstaben als Standard geben, der Ihnen am Anfang präsentiert wird.
+				Diesen sollen Sie wieder erkennen. Anschließend, nach einem [  ], werden Ihnen zwei Buchstaben angezeigt, von denen einer der Standard ist.
+				Bitte nutzen Sie die für links die X- oder für rechts die N-Taste um anzugeben, ob der Standard-Buchstabe auf der linken oder rechten Seite zu sehen ist.<br>
+				Bitte entscheiden Sie so schnell und so genau wie möglich.
+				Denken Sie nicht zu viel über ihre Entscheidung nach, sondern folgen Sie Ihrem Instinkt.</p>
+				<p>Nachdem Sie diese Instruktionen gelesen haben, drücken Sie bitte die rechte Pfeiltaste um fort zu fahren.</p>
+				`]
+		};
+		widgets.push(conf_instr);
+		
+		
+		for (const widget of widgets){
+			widget['button_label'] = 'Weiter';
+			if (widget['questions']) {
+				for (const question of widget['questions']){
+					question['required'] = true;
+				}
+			}
+			timeline.push(widget);
+		}
+		
+		function genConfStim() {
+			let distractor = '',
+				fav_letter = '',
+				letter_i = 0,
+				conf_stim = [],
+				two_letter = [];
+			
+			fav_letter = 'M';
+			letter_i = alphabet.indexOf(fav_letter);
+			alphabet.splice(letter_i, 1); //kick out fav_letter
+			
+			for (i=0; i<25; i++) {
+				distractor = alphabet[i];
+				if (Math.random() < .5) {
+					two_letters = [fav_letter, distractor];
+				}
+				else {
+					two_letters = [distractor, fav_letter];
+				}
+				conf_stim.push({stimulus: two_letters[0] + '&emsp;' + two_letters[1]});
+			};
+			conf_stim = jsPsych.randomization.shuffle(conf_stim);
+			return conf_stim;
+		}
+		
+		conf_rt = {
+			type: 'html-keyboard-response',
+			timeline: genConfStim(),
+			choices: ['x', 'n']
+		};
+		timeline.push(conf_rt);
+		
+		jsPsych.init({
+			timeline: timeline,
+			on_finish: function() {
+      			jsPsych.data.displayData();
+      			saveData(subj_id, jsPsych.data.get().csv());
+				}
+			}
+		)
 	</script>
 </html>
