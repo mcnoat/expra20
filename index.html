@@ -236,12 +236,21 @@
 					target = '',
 					html_display = '',
 					id_json = '';
+				
+				if (block_i===0 && trial_i===0){
+					id_json = jsPsych.data.get().filter({trial_type: 'survey-text'}).select('responses').values;
+					id_obj = JSON.parse(id_json);
+					subj_code = id_obj.subj_code;
 
-				fore_letter = subj_code[0];
-				sur_letter = subj_code.slice(-1);
+					fore_letter = subj_code[0];
+					letter_pool.splice(letter_pool.indexOf(fore_letter), 1);
+					sur_letter = subj_code.slice(-1);
+					letter_pool.splice(letter_pool.indexOf(sur_letter), 1);
 
-				control1 = '?';
-				control2 = '!';
+					letter_pool = jsPsych.randomization.shuffle(letter_pool);
+					control1 = letter_pool.pop();
+					control2 = letter_pool.pop();
+				}
 
 				switch (block_i) {
 					case 0:
@@ -257,7 +266,6 @@
 						target = sur_letter;
 						break;
 				}
-				target = '<u>' + target + '</u>'
 				
 				//do not compare letter to itself
 				if (dist_alphabet.includes(target)) {
@@ -265,7 +273,7 @@
 				}
 				
 				target = underline(target);
-				distractor = alphabet[trial_i];
+				distractor = dist_alphabet[trial_i];
 				
 				if (Math.random() < .5) {
 					two_letters = [target, distractor]

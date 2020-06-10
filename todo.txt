@@ -4,6 +4,7 @@ necessary:
 * make sure target letters are not chosen as control letters
 * SONA integration
 * adjust instructions for confusability task
+* think through experiment --> Is all the important information being saved?
 
 would make a big difference:
 * check whether each trial has a name attribute
