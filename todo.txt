@@ -1,0 +1,19 @@
+necessary:
+* save fav_letter in file --> read in that file
+  * create a placeholder file at the beginning
+* tell participant about target letter
+* implement letter attractiveness rating
+* expand on confusability task
+* SONA integration
+* adjust instructions for confusability task
+
+would make a big difference:
+* check whether each trial has a name attribute
+* encode numbers for the Rosenberg answers
+  * pay attention to reversed in answer
+* add debriefing
+  * ...about subject code
+  * ...about real purpose of letter attractiveness
+
+nice to have:
+* export stimuli generation to an external file (to make code cleaner)
