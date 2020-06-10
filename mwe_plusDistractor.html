@@ -13,7 +13,9 @@
 	</head>
 	<body></body>
 	<script>
-let letter_display, letter_survey, test_procedure, timeline0, timeline;
+let timeline = [],
+	confusability = {},
+	letter_survey = {};
 
 timeline = [];
 
@@ -25,24 +27,35 @@ letter_survey = {
         }
 timeline.push(letter_survey);
 
-letter_display = {
-    type: 'html-keyboard-response',
-    stimulus: jsPsych.timelineVariable('stimulus'),
-};
+let alphabet = '',
+	stim = [],
+	fav_func = function(){};
 
-function simpFunc() {
-	let y = function() {
-		return JSON.parse(jsPsych.data.get().filter({trial_type: 'survey-text'}).select('responses').values).favorite;
+alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+for (let i = 0; i<5; i++) {
+	fav_func = function() {
+		let id_obj = {},
+			distractor = '',
+			fav_letter = '',
+			two_letters = '',
+			id_json = '';
+		id_json = jsPsych.data.get().filter({trial_type: 'survey-text'}).select('responses').values;
+		id_obj = JSON.parse(id_json);
+		fav_letter = id_obj.favorite[0];
+		distractor = alphabet[i];
+		two_letters = fav_letter + '&emsp;' + distractor;
+		return two_letters;
 		}
-	stim = [{stimulus: y}]
-	return stim
-}
+			
+	stim.push({stimulus: fav_func})
+	}
 
-test_procedure = {
+confusability = {
     type: 'html-keyboard-response',
-    timeline: simpFunc()
+    timeline: stim
 	};
-timeline.push(test_procedure);
+timeline.push(confusability);
 
 jsPsych.init({
     timeline: timeline
