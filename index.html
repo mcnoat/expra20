@@ -223,18 +223,24 @@
 	blocks = [ [], [], [], [] ];
 	
 	for (let block_i = 0; block_i < 4; block_i++) {
+<<<<<<< HEAD
+=======
+		let dist_alphabet = '';
+
+		dist_alphabet = generateAlphabet();
+>>>>>>> master
 
 		for (let trial_i = 0; trial_i < 25; trial_i++) {
 			fav_func = function() {
 				let two_letters = [],
 					id_obj = {},
-					alphabet = '',
 					distractor = '',
 					subj_code = '',
 					target = '',
 					html_display = '',
 					id_json = '';
 
+<<<<<<< HEAD
 				if (block_i===0 && trial_i===0) {
 					id_json = jsPsych.data.get().filter({trial_type: 'survey-text'}).select('responses').values;
 					id_obj = JSON.parse(id_json);
@@ -249,6 +255,13 @@
 					control1 = letter_pool.pop();
 					control2 = letter_pool.pop();
 				}
+=======
+				fore_letter = subj_code[0];
+				sur_letter = subj_code.slice(-1);
+
+				control1 = '?';
+				control2 = '!';
+>>>>>>> master
 
 				switch (block_i) {
 					case 0:
@@ -264,11 +277,11 @@
 						target = sur_letter;
 						break;
 				}
+				target = '<u>' + target + '</u>'
 				
-				alphabet = generateAlphabet();
 				//do not compare letter to itself
-				if (alphabet.includes(target)) {
-					alphabet.splice(alphabet.indexOf(target), 1);
+				if (dist_alphabet.includes(target)) {
+					dist_alphabet.splice(alphabet.indexOf(target), 1);
 				}
 				
 				target = underline(target);

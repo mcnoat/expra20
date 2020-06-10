@@ -1,6 +1,7 @@
 necessary:
 * tell participant about target letter
 * implement letter attractiveness rating
+* make sure target letters are not chosen as control letters
 * SONA integration
 * adjust instructions for confusability task
 
