@@ -215,12 +215,14 @@
 	blocks = [ [], [], [], [] ];
 	
 	for (let block_i = 0; block_i < 4; block_i++) {
-		
+		let dist_alphabet = '';
+
+		dist_alphabet = generateAlphabet();
+
 		for (let trial_i = 0; trial_i < 25; trial_i++) {
 			fav_func = function() {
 				let two_letters = [],
 					id_obj = {},
-					alphabet = '',
 					distractor = '',
 					fore_letter = '',
 					subj_code = '',
@@ -235,6 +237,7 @@
 
 				fore_letter = subj_code[0];
 				sur_letter = subj_code.slice(-1);
+
 				control1 = '?';
 				control2 = '!';
 
@@ -252,11 +255,11 @@
 						target = sur_letter;
 						break;
 				}
+				target = '<u>' + target + '</u>'
 				
-				alphabet = generateAlphabet();
 				//do not compare letter to itself
-				if (alphabet.includes(target)) {
-					alphabet.splice(alphabet.indexOf(target), 1);
+				if (dist_alphabet.includes(target)) {
+					dist_alphabet.splice(alphabet.indexOf(target), 1);
 				}
 				
 				distractor = alphabet[trial_i];

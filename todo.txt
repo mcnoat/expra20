@@ -1,9 +1,7 @@
 necessary:
-* save fav_letter in file --> read in that file
-  * create a placeholder file at the beginning
 * tell participant about target letter
 * implement letter attractiveness rating
-* expand on confusability task
+* make sure target letters are not chosen as control letters
 * SONA integration
 * adjust instructions for confusability task
 
