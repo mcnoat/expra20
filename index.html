@@ -122,7 +122,7 @@
 			name: 'subj_code'}
 		]
 	};
-	widgets.splice(0, 0, subj_code);
+	widgets.push(subj_code);
 
 	attract_instr = {
 		type: 'instructions',
@@ -141,16 +141,29 @@
 	};
 	widgets.push(attract_instr);
 
-	let alphabet = '';
+	let attract_alphabet = [],
+		attract_questions = [],
+		attract_question = {};
 
-	alphabet = generateAlphabet();
-	for (i=0; i<26; i++){
-		
+	attract_alphabet = generateAlphabet();
+	attract_alphabet = jsPsych.randomization.shuffle(attract_alphabet);
+	scale = [1, 2, 3, 4, 5, 6];
+	for (const letter of attract_alphabet){
+		attract_question = {
+			prompt: '<b>'+letter+'</b>',
+			options: scale,
+			horizontal: true,
+			name: 'attract' + letter
+		};
+		attract_questions.push(attract_question);
 	}
 
 	attract_rating = {
-		
-	}
+		type: 'survey-multi-choice',
+		questions: attract_questions
+	};
+
+	widgets.push(attract_rating);
 
 	scale = ['Trifft gar nicht zu', 'Trifft eher nicht zu', 'Trifft eher zu', 'Trifft voll und ganz zu']
 	self_esteem = {
@@ -180,7 +193,7 @@
 		randomize_question_order: true
 	};
 	for (const question of self_esteem['questions']){
-		question['options'] = scale
+		question['options'] = scale;
 	}
 	widgets.push(self_esteem);
 
@@ -210,14 +223,52 @@
 	}
 
 	let blocks = [],
-		letter_pool = [],
+		dist_randomizer = [],
 		fav_func = function(){},
 		control1 = '',
 		control2 = '',
-		fore_letter = '',
-		sur_letter = '';
+		fore = '',
+		sur = '';
 	
-	letter_pool = generateAlphabet();
+	dist_randomizer = generateAlphabet();
+	dist_randomizer = jsPsych.randomization.shuffle(dist_randomizer);
+
+	function getTargets() {
+		let json_arry = [],
+			randomizer_i = 0,
+			obj = {},
+			control1 = '',
+			control2 = '',
+			fore = '',
+			subj_code = '',
+			sur = '';
+		
+		json_arr = jsPsych.data.get().filter({trial_type: 'survey-text'}).select('responses').values; 
+		for (const json of json_arr) {
+			obj = JSON.parse(json);
+			if ('subj_code' in obj){
+				subj_code = obj.subj_code;
+			}
+		}
+
+		fore = subj_code[0];
+		sur = subj_code.slice(-1);
+
+		//select the first four elements of the randomizer
+		randomizer_slice = dist_randomizer.slice(0, 4);
+		//check whether target is in slice and remove it if necessary
+		for (const letter of [fore, sur]){
+			if (randomizer_slice.includes(letter)){
+				let i = randomizer_slice.indexOf(letter);
+				randomizer_slice.splice(i, 1);
+			}
+		}
+		control1 = randomizer_slice[0];
+		control2 = randomizer_slice[1];
+
+		//order in accordance with the order of presentation during experiment
+		return [control1, fore, control2, sur]
+	}
 
 	//array of 4 empty arrays
 	blocks = [ [], [], [], [] ];
@@ -238,18 +289,7 @@
 					id_json = '';
 				
 				if (block_i===0 && trial_i===0){
-					id_json = jsPsych.data.get().filter({trial_type: 'survey-text'}).select('responses').values;
-					id_obj = JSON.parse(id_json);
-					subj_code = id_obj.subj_code;
-
-					fore_letter = subj_code[0];
-					letter_pool.splice(letter_pool.indexOf(fore_letter), 1);
-					sur_letter = subj_code.slice(-1);
-					letter_pool.splice(letter_pool.indexOf(sur_letter), 1);
-
-					letter_pool = jsPsych.randomization.shuffle(letter_pool);
-					control1 = letter_pool.pop();
-					control2 = letter_pool.pop();
+					[control1, fore, control2, sur] = getTargets();
 				}
 
 				switch (block_i) {
@@ -257,22 +297,21 @@
 						target = control1;
 						break;
 					case 1:
-						target = fore_letter;
+						target = fore;
 						break;
 					case 2:
 						target = control2;
 						break;
 					case 3:
-						target = sur_letter;
+						target = sur;
 						break;
 				}
 				
 				//do not compare letter to itself
 				if (dist_alphabet.includes(target)) {
-					dist_alphabet.splice(alphabet.indexOf(target), 1);
+					dist_alphabet.splice(dist_alphabet.indexOf(target), 1);
 				}
 				
-				target = underline(target);
 				distractor = dist_alphabet[trial_i];
 				
 				if (Math.random() < .5) {
@@ -289,7 +328,7 @@
 			blocks[block_i].push({stimulus: fav_func})
 		}
 	}
-	
+
 	letter_display = {
 		type: 'html-keyboard-response',
 		stimulus: jsPsych.timelineVariable('stimulus'),
@@ -303,29 +342,42 @@
 		trial_duration: 50
 	};
 	
-	let block1 = {
-		timeline: [fixation, letter_display],
-		timeline_variables: blocks[0]
-	};
-	timeline.splice(1, 0, block1);
+	let target_instructs = [],
+		instruct_func = function(){};
 
-	let block2 = {
-		timeline: [fixation, letter_display],
-		timeline_variables: blocks[1]
-	};
-	timeline.splice(2, 0, block2);
+	for (let i=0; i<4; i++) {
+		instruct_func = function() {
+			let instruct = ''
+				target = '';
 
-	let block3 = {
-		timeline: [fixation, letter_display],
-		timeline_variables: blocks[2]
-	};
-	timeline.splice(3, 0, block3);
+			target = getTargets()[i];
+			instruct = `
+				Ihr Target für diese Runde ist ${target}.<br>
+				Drücken Sie eine beliebige Taste, um fort zu fahren.
+				`
 
-	let block4 = {
-		timeline: [fixation, letter_display],
-		timeline_variables: blocks[3]
-	};
-	timeline.splice(4, 0, block4);
+			return instruct; 
+		}
+		target_instructs.push(instruct_func);
+	}
+
+
+	let conf_block = {},
+		target_tell = {};
+
+	for (let i=0; i<4; i++) {
+		target_tell = {
+			type: 'html-keyboard-response',
+			stimulus: target_instructs[i]
+		};
+		timeline.push(target_tell);
+
+		conf_block = {
+			timeline: [fixation, letter_display],
+			timeline_variables: blocks[i]
+		};
+		timeline.push(conf_block);
+	}
 
 	jsPsych.init({
 		timeline: timeline,
