@@ -1,10 +1,13 @@
-necessary: 
-* tell participant about target letter
+necessary:
+* randomize order of distractors
 * SONA integration
-* adjust instructions for confusability task
+* Is data being saved on the server?
 * think through experiment --> Is all the important information being saved?
+* finalization: don't show data at the end
 
 would make a big difference:
+* test block with non-letter
+* improve instructions for the different parts
 * check whether each trial has a name attribute
 * encode numbers for the Rosenberg answers
   * pay attention to reversed in answer

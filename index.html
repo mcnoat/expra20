@@ -200,13 +200,14 @@
 	conf_instr = {
 		type: 'instructions',
 		pages: [`
-			<p>In dem folgenden Abschnitt des Experiments werden Ihnen [  ] und  Buchstaben für einen kurzen Augenblick präsentiert werden.
-			Pro Durchgang wird es einen Buchstaben als Standard geben, der Ihnen am Anfang präsentiert wird.
-			Diesen sollen Sie wieder erkennen. Anschließend, nach einem [  ], werden Ihnen zwei Buchstaben angezeigt, von denen einer der Standard ist.
-			Bitte nutzen Sie die für links die X- oder für rechts die N-Taste um anzugeben, ob der Standard-Buchstabe auf der linken oder rechten Seite zu sehen ist.<br>
+			<p>In dem folgenden Abschnitt des Experiments werden Ihnen ein Kreuz und  Buchstaben für einen kurzen Augenblick präsentiert werden.
+			Pro Durchgang wird es einen Buchstaben als "Zielbuchstaben" geben, der Ihnen am Anfang präsentiert wird.
+			Diesen sollen Sie wieder erkennen.
+			Anschließend, nach einem Kreuz, werden Ihnen zwei Buchstaben angezeigt, von denen einer der Standard ist.
+			Bitte nutzen Sie die für links die X- oder für rechts die N-Taste um anzugeben, ob der Ziel-Buchstabe auf der linken oder rechten Seite zu sehen ist.<br>
 			Bitte entscheiden Sie so schnell und so genau wie möglich.
 			Denken Sie nicht zu viel über ihre Entscheidung nach, sondern folgen Sie Ihrem Instinkt.</p>
-			<p>Nachdem Sie diese Instruktionen gelesen haben, drücken Sie bitte die rechte Pfeiltaste um fort zu fahren.</p>
+			<p>Nachdem Sie diese Instruktionen gelesen haben, drücken Sie bitte die rechte Pfeiltaste, um fort zu fahren.</p>
 			`]
 	};
 	widgets.push(conf_instr);
@@ -274,9 +275,10 @@
 	blocks = [ [], [], [], [] ];
 	
 	for (let block_i = 0; block_i < 4; block_i++) {
-		let dist_alphabet = '';
+		let dist_alphabet = [];
 
 		dist_alphabet = generateAlphabet();
+		dist_alphabet = jsPsych.randomization.shuffle(dist_alphabet);
 
 		for (let trial_i = 0; trial_i < 25; trial_i++) {
 			fav_func = function() {
