@@ -1,7 +1,5 @@
 necessary:
-* randomize order of distractors
 * SONA integration
-* Is data being saved on the server?
 * think through experiment --> Is all the important information being saved?
 * finalization: don't show data at the end
 
