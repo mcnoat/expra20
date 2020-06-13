@@ -3,21 +3,27 @@
 <head>
 	<meta charset="utf-8">
 	<title>Expra experiment</title>
+	<script src="confusability.js"></script>
 	<script src="jsPsych/jspsych.js"></script>
 	<script src="jsPsych/plugins/jspsych-html-keyboard-response.js"></script>
 	<script src="jsPsych/plugins/jspsych-instructions.js"></script>
 	<script src="jsPsych/plugins/jspsych-survey-html-form.js"></script>
 	<script src="jsPsych/plugins/jspsych-survey-multi-choice.js"></script>
 	<script src="jsPsych/plugins/jspsych-survey-text.js"></script>
+	<script src="webhelpers.js"></script>
 	<link href="jsPsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
 </head>
 <body></body>
 <script>
-	let age = {},
+	let scale = [],
+		timeline = [],
+		widgets = [],
+		age = {},
 		attract_instr = {},
 		attract_rating = {},
 		conf_instruct = {},
 		conf_rt = {},
+		debriefing = {},
 		fixation = {},
 		gender = {},
 		language = {},
@@ -26,33 +32,18 @@
 		self_esteem = {},
 		subj_code = {},
 		welcome = {},
-		scale = [],
-		timeline = [],
-		widgets = [],
+		sona_id = '',
 		subj_id = '';
 
-	function saveData(name, data){
-		let xhr = new XMLHttpRequest();
-		xhr.open('POST', 'write_data.php'); // 'write_data.php' is the path to the php file described above.
-		xhr.setRequestHeader('Content-Type', 'application/json');
-		xhr.send(JSON.stringify({filename: name, filedata: data}));
-	}
+	sona_id = getURLParameters('subject');
+	subj_id = jsPsych.randomization.randomID();
 
-	function generateAlphabet() {
-  		let alphabet = [];
-  		let start = 'A'.charCodeAt(0);
-  		let last  = 'Z'.charCodeAt(0);
-  		for (let i = start; i <= last; i++) {
-    		alphabet.push(String.fromCharCode(i));
-  		}
-		return alphabet;
-	}
-
-	function underline(letter) {
-		return '<u>' + letter + '</u>'
-	}
-
-	subj_id = jsPsych.randomization.randomID()
+	jsPsych.data.addProperties(
+		{
+			sona: sona_id,
+			subject: subj_id
+		}
+	)
 
 	welcome = {
 		type: 'instructions',
@@ -380,6 +371,41 @@
 		};
 		timeline.push(conf_block);
 	}
+
+	debriefing = {
+		type: 'instructions',
+		pages: [
+				`
+				<p>Sie sind am Ende der Studie angekommen.
+				Bitte schließen sie nicht diese Seite, weil Sie dann nicht automatisch Versuchspersonenstunden für die Studie erhalten und möglicherweise nicht alle Daten korrekt gespeichert werden.
+				Durch das Klicken des "Weiter"-Knopfes auf der nächsten Seite können Sie das Experiment regulär beenden und Ihre Versuchspersonenstunden erhalten.</p>
+				<p>An dieser Stelle möchten wir Sie über zwei Täuschungsversuche aufklären, die Teil dieser Studie waren.
+				Mehrere Studie haben gezeigt, dass ein erhöhter Selbstwert mit einer höheren Attraktivitäts-Bewertung für den Anfangsbuchstaben des eigenen Vornamens zusammen hängt.
+				Wir haben uns dafür interessiert, ob erhöhter Selbstwert dazu führt, dass man den Anfangsbuchstaben des eigenen Vornames weniger leicht mit anderen Buchstaben verwechselt.
+				Um möglichst zu verhinern, dass Versuchspersonen die Hypothese des Experiments erraten und so möglicherweise die Ergebnisse verfälscht werden, haben wir zwei Täuschungen in das Experiment eingebaut:
+				<ul>
+					<li> Wir haben Ihnen gesagt, dass Studien gezeigt hätten, die Bewertung von Buchstaben erleichtere die Erfassung von Emotionen.
+						Uns sind keine solchen Studien bekannt.
+						In der Tat war das Ziel schlichtweg, Ihre Einschätzung der Attraktivität der Buchstaben zu erfassen.
+						</li>
+					<li>Wir haben den Versuchspersonen-Code, den Sie erstellt haben, dafür genutzt, um den Anfangsbuchstaben Ihres Vornames und Nachnamens in Erfahrung zu bringen.
+						Diese Buchstaben wurden Ihnen daraufhin in der Buchstaben-Aufgabe präsentiert.</li>
+				</ul>
+				Klicken Sie die rechte Pfeiltaste, um fort zu fahren.
+				`
+			]
+	};
+	timeline.splice(0, 0, debriefing);
+
+	exp_finish = {
+		type: 'html-keyboard-response',
+		stimulus: [`
+					Bitte drücken Sie auf "Beenden", um das Experimen abzuschließen.
+				`],
+		options: ['Beenden'],
+		on_finish: window.location.replace('https://marburg-psychology.sona-systems.com/webstudy_credit.aspx?experiment_id=404&credit_token=4a44cc67b7b34b9481fffb2d06a8fd95&survey_code='+sona_id)
+	};
+	timeline.splice(1, 0, exp_finish);
 
 	jsPsych.init({
 		timeline: timeline,
