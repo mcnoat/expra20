@@ -33,9 +33,12 @@
 		subj_code = {},
 		welcome = {},
 		sona_id = '',
-		subj_id = '';
+		subj_id = '',
+		url = '';
 
-	sona_id = getURLParameter('subject');
+	url = window.location.href;
+	sona_id = url.substring(url.lastIndexOf('=') + 1);
+	console.log(sona_id);
 	subj_id = jsPsych.randomization.randomID();
 
 	jsPsych.data.addProperties(
@@ -392,20 +395,15 @@
 						Diese Buchstaben wurden Ihnen daraufhin in der Buchstaben-Aufgabe präsentiert.</li>
 				</ul>
 				Klicken Sie die rechte Pfeiltaste, um fort zu fahren.
+				`,
 				`
-			]
+				Bitte drücken Sie die rechte Pfeiltaste, um das Experimen abzuschließen.
+				Ihre Versuchspersonenstunden werden Ihnen automatisch gut geschrieben.
+				`
+			],
+			on_finish: function(){window.location.replace('https://marburg-psychology.sona-systems.com/webstudy_credit.aspx?experiment_id=404&credit_token=4a44cc67b7b34b9481fffb2d06a8fd95&survey_code='+sona_id)}
 	};
 	timeline.splice(0, 0, debriefing);
-
-	exp_finish = {
-		type: 'html-keyboard-response',
-		stimulus: [`
-					Bitte drücken Sie auf "Beenden", um das Experimen abzuschließen.
-				`],
-		options: ['Beenden'],
-		on_finish: window.location.replace('https://marburg-psychology.sona-systems.com/webstudy_credit.aspx?experiment_id=404&credit_token=4a44cc67b7b34b9481fffb2d06a8fd95&survey_code='+sona_id)
-	};
-	timeline.splice(1, 0, exp_finish);
 
 	jsPsych.init({
 		timeline: timeline,
