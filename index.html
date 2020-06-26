@@ -313,11 +313,14 @@
 					stim_dom = parser.parseFromString(data.stimulus, 'text/html');
 					two_stimuli = stim_dom.body.textContent;
 					//translate key_press and stimuli into the same format (e.g. left/right)r
-					if (two_stimuli[0] == data.target) {
+					if (two_stimuli[0] === data.target) {
 						target_pos = 'left';
+						//first stimulus is target --> other one has to be distractor
+						data.distractor = two_stimuli.slice(-1);
 					}
 					else {
 						target_pos = 'right';
+						data.distractor = two_stimuli[0];
 					}
 
 					if (target_guess === target_pos) {

@@ -75,15 +75,15 @@ function genInstructs(rand_indices, training=false) {
       if (training) {
         instruct = `
           Dieser erste Block ist ein Trainings-Block.
-          Da dies noch nicht das eigentliche Experiment ist, haben wir als Ziel keinen Buchstaben, sondern ein Zeichen ausgewählt.
+          Da dies noch nicht das eigentliche Experiment ist, haben wir als Ziel keinen Buchstaben, sondern ein Zeichen ausgewählt.<br>
           Das Zielzeichen für diese Runde ist "#"".<br>
-          Drücken Sie bitte die rechte Pfeiltaste, um fort zu fahren.
+          Drücken Sie bitte die rechte Pfeiltaste, wenn Sie bereit sind, mit dem Experiment fortzufahren.
           `
       }
       else {
         instruct = `
           Der Zielbuchstabe für diese Runde ist ${target}.<br>
-          Drücken Sie bitte die rechte Pfeiltaste, um fort zu fahren.
+          Drücken Sie bitte die rechte Pfeiltaste, wenn Sie bereit sind, mit dem Experiment fortzufahren.
           `
       }
 
@@ -113,7 +113,7 @@ function getTargets(rand_indices, training=false) {
       subj_code = '',
       sur = '';
   
-  num_block = rand_indices.length;
+  num_blocks = rand_indices.length;
   
   json_arr = jsPsych.data.get().filter({trial_type: 'survey-text'}).select('responses').values; 
   for (const json of json_arr) {
