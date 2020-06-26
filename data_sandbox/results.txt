@@ -1,0 +1,15 @@
+count     3.0
+mean     25.0
+std       2.0
+min      23.0
+25%      24.0
+50%      25.0
+75%      26.0
+max      27.0
+Name: age, dtype: float64
+
+count            3
+unique           2
+top       männlich
+freq             2
+Name: gender, dtype: object

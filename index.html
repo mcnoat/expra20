@@ -18,6 +18,7 @@
 	let scale = [],
 		timeline = [],
 		widgets = [],
+		saveFunc = function(){},
 		age = {},
 		attract_instr = {},
 		attract_rating = {},
@@ -47,6 +48,34 @@
 			subject: subj_id
 		}
 	)
+
+	let date = new Date(),
+		day = '',
+		fname = '',
+        hour = '',
+        minute = '',
+		month = '',
+		start_time = '',
+        year = '';
+    
+    function zeroPad(number, width) {
+      let string = String(number);
+      while (string.length < width) {
+        string = "0" + string;
+      }
+      return string;
+    }
+
+    year = date.getFullYear();
+    month = zeroPad(date.getMonth()+1, 2);
+    day = zeroPad(date.getDate(), 2);
+    hour = zeroPad(date.getHours()+1, 2);
+    minute = zeroPad(date.getMinutes()+1, 2);
+	start_time = [year,month,day,hour,minute].join('-');
+
+	fname = start_time + '_' + subj_id.slice(0,5);
+	
+	saveFunc = function() {saveData(fname, jsPsych.data.get().csv())};
 
 	welcome = {
 		type: 'instructions',
@@ -91,11 +120,12 @@
 	latin = {
 		type: 'survey-multi-choice',
 		questions: [
-				{prompt: 'Benutzt Ihre Muttersprache die Buchstaben A bis Z aus dem lateinisch-römischen Alphabet?',
-				options: ['ja', 'nein']
+				{prompt: `Benutzt Ihre Muttersprache die Buchstaben von A bis Z (lateinisches Alphabet)?<br>
+					Kreuzen Sie "nein" an, wenn Sie mit einer Spracche aufgewachsen sind, die z.B. chinesische, arabische oder griechische Zeichen verwendet.`,
+				options: ['ja', 'nein'],
+				name: 'latin'
 				}
-			],
-		name: 'latin'
+			]
 	};
 	widgets.push(latin);
 
@@ -116,7 +146,8 @@
 			name: 'subj_code'}
 		]
 	};
-	widgets.push(subj_code);
+	timeline.push(subj_code);
+	//widgets.push(subj_code);
 
 	attract_instr = {
 		type: 'instructions',
@@ -127,7 +158,7 @@
 			Wahrscheinlich sind Sie es nicht gewohnt, Buchstaben zu bewerten.
 			Wir möchten Sie aber trotzdem darum bitten, da Studien gezeigt haben, dass die spätere Erfassung menschlicher Gedanken und Emotionen dadurch erleichtert wird.
 			Im Folgenden finden Sie die einzelnen Buchstaben des Alphabets.
-			Schreiben Sie bitte hinter jedem Buchstaben eine Zahl von 1 bis 6.
+			Klicken Sie für jeden Buchstaben eine Zahl von 1 bis 6 an.
 			Hiermit drücken Sie aus, wie sehr Ihnen der jeweilige Buchstabe gefällt ( <b>1 = gefällt mir ganz und gar nicht</b>, <b>6 = gefällt mir sehr</b>).<br>
 			Entscheiden Sie bitte bei jedem Buchstaben spontan, also ohne lange zu überlegen.</p>
 			<p>Nachdem Sie diese Instruktionen aufmerksam gelesen haben, drücken Sie bitte die rechte Pfeiltaste, um fort zu fahren.</p>
@@ -154,7 +185,9 @@
 
 	attract_rating = {
 		type: 'survey-multi-choice',
-		questions: attract_questions
+		questions: attract_questions,
+		preamble: `Bitte geben Sie für jeden Buchstaben an, wie sehr er Ihnen gefällt ( <b>1 = gefällt mir ganz und gar nicht</b>, <b>6 = gefällt mir sehr</b>).<br>
+					Hinter jedem Buchstaben steht ein Sternchen. Dies bedeutet lediglich, dass Sie diese Frage beantworten müssen, um mit dem Experiment fortfahren zu können.`
 	};
 
 	widgets.push(attract_rating);
@@ -184,6 +217,7 @@
 			{prompt: '<b>Ich habe eine positive Einstellung zu mir selbst gefunden.</b>',
 			name: 'rosenberg10'}
 		],
+		preamble: 'Diese Seite beinhaltet einen Fragebogen zu persönlichen Überzeugungen von Ihnen. Bitte geben Sie jeweils an, wie sehr Sie den jeweiligen Aussagen zustimmen.',
 		randomize_question_order: true
 	};
 	for (const question of self_esteem['questions']){
@@ -194,11 +228,13 @@
 	conf_instr = {
 		type: 'instructions',
 		pages: [`
-			<p>In dem folgenden Abschnitt des Experiments werden Ihnen ein Kreuz und  Buchstaben für einen kurzen Augenblick präsentiert.
-			Pro Durchgang wird es einen Buchstaben als "Zielbuchstaben" geben, der Ihnen am Anfang präsentiert wird.
-			Diesen sollen Sie wieder erkennen.
-			Anschließend, nach einem Kreuz, werden Ihnen zwei Buchstaben angezeigt, von denen einer der Standard ist.
-			Bitte nutzen Sie für links die X- oder für rechts die N-Taste um anzugeben, ob der Ziel-Buchstabe auf der linken oder rechten Seite zu sehen ist.<br>
+			<p>Der folgende Abschnitt des Experiments besteht aus vielen einzelnen Durchgängen.
+			In jedem Durchgang werden Ihnen zwei Buchstaben präsetiert, der eine links und der andere rechts.
+			Die Durchgänge sind in mehreren "Blöcken" gruppiert.
+			Vor jedem Block wird ein Buchstabe als "Zielbuchstabe" festgelegt.
+			In jedem Durchgang wird es Ihre Aufgabe sein, den Zielbuchstaben aktiven Blockes wieder zu erkennen.
+			Anschließend, nach einem Kreuz, werden Ihnen zwei Buchstaben angezeigt, von denen einer der Zielbuchstabe ist.
+			Bitte nutzen Sie für links die X- oder für rechts die N-Taste um anzugeben, ob der Zielbuchstabe auf der linken oder rechten Seite zu sehen ist.<br>
 			Bitte entscheiden Sie so schnell und so genau wie möglich.
 			Denken Sie nicht zu viel über ihre Entscheidung nach, sondern folgen Sie Ihrem Instinkt.</p>
 			<p>Nachdem Sie diese Instruktionen gelesen haben, drücken Sie bitte die rechte Pfeiltaste, um fort zu fahren.</p>
@@ -207,172 +243,100 @@
 	widgets.push(conf_instr);
 
 
-	for (const widget of widgets){
+	/*for (const widget of widgets){
 		widget['button_label'] = 'Weiter';
+		widget['on_finish'] = saveFunc;
 		if (widget['questions']) {
 			for (const question of widget['questions']){
 				question['required'] = true;
 			}
 		}
 		timeline.push(widget);
-	}
+	}*/
 
-	let blocks = [],
-		dist_randomizer = [],
-		fav_func = function(){},
-		control1 = '',
-		control2 = '',
-		fore = '',
-		sur = '';
+	let dist_randomizer = [];
 	
 	dist_randomizer = generateAlphabet();
 	dist_randomizer = jsPsych.randomization.shuffle(dist_randomizer);
 
-	function getTargets() {
-		let json_arry = [],
-			randomizer_i = 0,
-			obj = {},
-			control1 = '',
-			control2 = '',
-			fore = '',
-			subj_code = '',
-			sur = '';
-		
-		json_arr = jsPsych.data.get().filter({trial_type: 'survey-text'}).select('responses').values; 
-		for (const json of json_arr) {
-			obj = JSON.parse(json);
-			if ('subj_code' in obj){
-				subj_code = obj.subj_code;
-			}
-		}
-
-		fore = subj_code[0];
-		sur = subj_code.slice(-1);
-
-		//select the first four elements of the randomizer
-		randomizer_slice = dist_randomizer.slice(0, 4);
-		//check whether target is in slice and remove it if necessary
-		for (const letter of [fore, sur]){
-			if (randomizer_slice.includes(letter)){
-				let i = randomizer_slice.indexOf(letter);
-				randomizer_slice.splice(i, 1);
-			}
-		}
-		control1 = randomizer_slice[0];
-		control2 = randomizer_slice[1];
-
-		//order in accordance with the order of presentation during experiment
-		return [control1, fore, control2, sur]
-	}
-
-	//array of 4 empty arrays
-	blocks = [ [], [], [], [] ];
-	
-	for (let block_i = 0; block_i < 4; block_i++) {
-		let dist_alphabet = [];
-
-		dist_alphabet = generateAlphabet();
-		dist_alphabet = jsPsych.randomization.shuffle(dist_alphabet);
-
-		for (let trial_i = 0; trial_i < 25; trial_i++) {
-			fav_func = function() {
-				let two_letters = [],
-					id_obj = {},
-					distractor = '',
-					subj_code = '',
-					target = '',
-					html_display = '',
-					id_json = '';
-				
-				if (block_i===0 && trial_i===0){
-					[control1, fore, control2, sur] = getTargets();
-				}
-
-				switch (block_i) {
-					case 0:
-						target = control1;
-						break;
-					case 1:
-						target = fore;
-						break;
-					case 2:
-						target = control2;
-						break;
-					case 3:
-						target = sur;
-						break;
-				}
-				
-				//do not compare letter to itself
-				if (dist_alphabet.includes(target)) {
-					dist_alphabet.splice(dist_alphabet.indexOf(target), 1);
-				}
-				
-				distractor = dist_alphabet[trial_i];
-				
-				if (Math.random() < .5) {
-					two_letters = [target, distractor]
-				}
-				else {
-					two_letters = [distractor, target]
-				}
-				
-				html_display = '<div style="font-size:60px;">'+two_letters[0]+'&emsp;'+two_letters[1]+'</div>';
-				return html_display;
-				}
-				
-			blocks[block_i].push({stimulus: fav_func})
-		}
-	}
-
-	letter_display = {
-		type: 'html-keyboard-response',
-		stimulus: jsPsych.timelineVariable('stimulus'),
-		choices: ['x', 'n']
-	};
-	
-	fixation = {
-		type: 'html-keyboard-response',
-		stimulus: '<div style="font-size:60px;">+</div>',
-		choices: jsPsych.NO_KEYS,
-		trial_duration: 1000
-	};
-	
-	let target_instructs = [],
-		instruct_func = function(){};
-
-	for (let i=0; i<4; i++) {
-		instruct_func = function() {
-			let instruct = ''
-				target = '';
-
-			target = getTargets()[i];
-			instruct = `
-				Ihr Target für diese Runde ist ${target}.<br>
-				Drücken Sie eine beliebige Taste, um fort zu fahren.
-				`
-
-			return instruct; 
-		}
-		target_instructs.push(instruct_func);
-	}
-
-
 	let conf_block = {},
-		target_tell = {};
+		target_tell = {},
+		num_blocks = 0;
+	
+	for (const training of [true, false]) {
+		let rand_indices = [];
 
-	for (let i=0; i<4; i++) {
-		target_tell = {
-			type: 'html-keyboard-response',
-			stimulus: target_instructs[i]
-		};
-		timeline.push(target_tell);
+		if (training) {
+			num_blocks = 1;
+			rand_indices = [0];
+		}
+		else {
+			num_blocks = 6;
+			for (let i=0; i<num_blocks; i++) {
+				rand_indices.push(i);
+			}
+			rand_indices = jsPsych.randomization.shuffle(rand_indices);
+		}
+		for (let i=0; i<num_blocks; i++) {
+			target_tell = {
+				type: 'instructions',
+				pages: genInstructs(rand_indices, training)[i]
+			};
+			timeline.push(target_tell);
 
-		conf_block = {
-			timeline: [fixation, letter_display],
-			timeline_variables: blocks[i]
-		};
-		timeline.push(conf_block);
+			fixation = {
+				type: 'html-keyboard-response',
+				stimulus: '<div style="font-size:60px;color:red;">+</div>',
+				choices: jsPsych.NO_KEYS,
+				trial_duration: 1500
+			};
+
+			letter_display = {
+				type: 'html-keyboard-response',
+				stimulus: jsPsych.timelineVariable('stimulus'),
+				stimulus_duration: 50,
+				choices: ['x', 'n'],
+				on_finish: function(data) {
+					let parser = new DOMParser()
+								target_guess = '',
+								target_pos = '';
+
+					data.target = getTargets(rand_indices, training)[i];
+					data.key_press = String.fromCharCode(data.key_press);
+					if (data.key_press === 'X') {
+						target_guess = 'left';
+					}
+					else {
+						target_guess = 'right';
+					}
+
+					stim_dom = parser.parseFromString(data.stimulus, 'text/html');
+					two_stimuli = stim_dom.body.textContent;
+					//translate key_press and stimuli into the same format (e.g. left/right)r
+					if (two_stimuli[0] == data.target) {
+						target_pos = 'left';
+					}
+					else {
+						target_pos = 'right';
+					}
+
+					if (target_guess === target_pos) {
+						data.correct = true;
+					}
+					else {
+						data.correct = false;
+					}
+
+					saveFunc()
+				}
+			};
+
+			conf_block = {
+				timeline: [fixation, letter_display],
+				timeline_variables: genConfBlocks(rand_indices, training)[i]
+			};
+			timeline.push(conf_block);
+		}
 	}
 
 	debriefing = {
@@ -403,13 +367,13 @@
 			],
 			on_finish: function(){window.location.replace('https://marburg-psychology.sona-systems.com/webstudy_credit.aspx?experiment_id=404&credit_token=4a44cc67b7b34b9481fffb2d06a8fd95&survey_code='+sona_id)}
 	};
-	timeline.splice(0, 0, debriefing);
+	timeline.push(debriefing);
 
 	jsPsych.init({
 		timeline: timeline,
 		on_finish: function() {
 			jsPsych.data.displayData();
-			saveData(subj_id, jsPsych.data.get().csv());
+			saveFunc();
 			}
 		}
 	)
