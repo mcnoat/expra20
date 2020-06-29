@@ -82,7 +82,7 @@ function genInstructs(rand_indices, training=false) {
       }
       else {
         instruct = `
-          Der Zielbuchstabe für diese Runde ist ${target}.<br>
+          Der Zielbuchstabe für diese Runde ist <b>${target}</b>.<br>
           Drücken Sie bitte die rechte Pfeiltaste, wenn Sie bereit sind, mit dem Experiment fortzufahren.
           `
       }
