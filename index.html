@@ -191,39 +191,6 @@
 
 	widgets.push(attract_rating);
 
-	scale = ['Trifft gar nicht zu', 'Trifft eher nicht zu', 'Trifft eher zu', 'Trifft voll und ganz zu']
-	self_esteem = {
-		type: 'survey-multi-choice',
-		questions: [
-			{prompt: '<b>Alles in allem bin ich mit mir selbst zufrieden.</b>',
-			name: 'rosenberg01'},
-			{prompt: '<b>Hin und wieder denke ich, dass ich gar nichts tauge.</b>',
-			name: 'rosenberg02'},
-			{prompt: '<b>Ich besitze eine Reihe guter Eigenschaften.</b>',
-			name: 'rosenberg03'},
-			{prompt: '<b>Ich kann vieles genauso gut wie die meisten anderen Menschen auch.</b>',
-			name: 'rosenberg04'},
-			{prompt: '<b>Ich fürchte, es gibt nicht viel, worauf ich Stolz sein kann.</b>',
-			name: 'rosenberg05'},
-			{prompt: '<b>Ich fühle mich von Zeit zu Zeit richtig nutzlos.</b>',
-			name: 'rosenberg06'},
-			{prompt: '<b>Ich halte mich für einen wertvollen Menschen, jedenfalls bin ich nicht weniger wertvoll als andere auch.</b>',
-			name: 'rosenberg07'},
-			{prompt: '<b>Ich wünschte, ich könnte vor mir selbst mehr Achtung haben.</b>',
-			name: 'rosenberg08'},
-			{prompt: '<b>Alles in allem neige ich dazu, mich für einen Versager zu halten.</b>',
-			name: 'rosenberg09'},
-			{prompt: '<b>Ich habe eine positive Einstellung zu mir selbst gefunden.</b>',
-			name: 'rosenberg10'}
-		],
-		preamble: 'Diese Seite beinhaltet einen Fragebogen zu persönlichen Überzeugungen von Ihnen. Bitte geben Sie an, wie sehr Sie den jeweiligen Aussagen zustimmen.',
-		randomize_question_order: true
-	};
-	for (const question of self_esteem['questions']){
-		question['options'] = scale;
-	}
-	widgets.push(self_esteem);
-
 	conf_instr = {
 		type: 'instructions',
 		pages: [`
