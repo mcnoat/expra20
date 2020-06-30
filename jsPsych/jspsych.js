@@ -94,7 +94,7 @@ window.jsPsych = (function() {
       'use_webaudio': true,
       'exclusions': {},
       'show_progress_bar': false,
-      'message_progress_bar': 'Completion Progress',
+      'message_progress_bar': 'Fortschrittsanzeige',
       'auto_update_progress_bar': true,
       'auto_preload': true,
       'show_preload_progress_bar': true,

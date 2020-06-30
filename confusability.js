@@ -74,6 +74,7 @@ function genFeedback(num_blocks, num_trials, training=false) {
       else {
         feedback = `
               Sie haben das Zielzeichen in ${Math.round(100*percentage_correct)}% der Durchgänge dieses Blocks richtig erkannt.<br>
+              Sie haben hiermit den Trainingsblock ageschlossen und können nun zum eigentlichen Experiment übergehen.
               Drücken Sie die rechte Pfeiltaste, um fortzufahren.
               `
       }
@@ -100,9 +101,10 @@ function genInstructs(rand_indices, training=false) {
       target = getTargets(rand_indices, training)[i];
       if (training) {
         instruct = `
-          Dieser erste Block ist ein Trainings-Block.
-          Da dies noch nicht das eigentliche Experiment ist, haben wir als Ziel keinen Buchstaben, sondern ein Zeichen ausgewählt.<br>
+          Dieser erste Block ist ein Trainingsblock.
+          Da dies noch nicht das eigentliche Experiment ist, haben wir als Ziel keinen Buchstaben, sondern ein Zeichen gewählt.<br>
           Das Zielzeichen für diese Runde ist <b>#</b>.<br>
+          Drücken Sie die X-Taste, falls das Zeichen links, und die N-Taste, falls das Zeichen rechts zu sehen ist.
           Drücken Sie bitte die rechte Pfeiltaste, wenn Sie bereit sind, mit dem Experiment fortzufahren.
           `
       }

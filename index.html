@@ -80,8 +80,8 @@
 	welcome = {
 		type: 'instructions',
 		pages: [`
-			Willkommen zum Experiment vom Expra B! Wir freuen uns sehr über Ihre Teilnahme.<br>
-			Drücken Sie die rechte Pfeiltaste, um mit dem Experiment fortzufahren.
+			<p>Willkommen zum Experiment vom Expra B! Wir freuen uns sehr über Ihre Teilnahme.</p>
+			<p>Drücken Sie die rechte Pfeiltaste, um mit dem Experiment fortzufahren.</p>
 			`]
 	};
 	widgets.push(welcome);
@@ -133,7 +133,7 @@
 		type: 'survey-text',
 		questions: [
 			{prompt: `
-			<p>Im Folgenden bitten wir Sie einen sechsstelligen persönlichen Code zu erstellen, den Sie durch Beantwortung der nachstehenden Fragen jederzeit wieder generieren könnten.</p>
+			<p>Im Folgenden bitten wir Sie, einen sechsstelligen persönlichen Code zu erstellen, den Sie durch Beantwortung der nachstehenden Fragen jederzeit wieder generieren könnten.</p>
 			<ol>
 				<li>Wie ist der Anfangsbuchstabe Ihres ersten Vornamens? z.B. bei Elke Alena Meier ein „E“</li>
 				<li>Wie lautet Ihr Geburtsdatum?
@@ -156,7 +156,7 @@
 			In diesem Fall haben wir Buchstaben gewählt.
 			Wahrscheinlich sind Sie es nicht gewohnt, Buchstaben zu bewerten.
 			Wir möchten Sie aber trotzdem darum bitten, da Studien gezeigt haben, dass die spätere Erfassung menschlicher Gedanken und Emotionen dadurch erleichtert wird.
-			Im Folgenden finden Sie die einzelnen Buchstaben des Alphabets.
+			Auf der folgenden Seite finden Sie die einzelnen Buchstaben des Alphabets.
 			Klicken Sie für jeden Buchstaben eine Zahl von 1 bis 6 an.
 			Hiermit drücken Sie aus, wie sehr Ihnen der jeweilige Buchstabe gefällt ( <b>1 = gefällt mir ganz und gar nicht</b>, <b>6 = gefällt mir sehr</b>).<br>
 			Entscheiden Sie bitte bei jedem Buchstaben spontan, also ohne lange zu überlegen.</p>
@@ -195,15 +195,20 @@
 		type: 'instructions',
 		pages: [`
 			<p>Der folgende Abschnitt des Experiments besteht aus vielen einzelnen Durchgängen.
-			In jedem Durchgang werden Ihnen zwei Buchstaben präsetiert, der eine links und der andere rechts.
+			In jedem Durchgang werden Ihnen zwei Buchstaben präsentiert, der eine links und der andere rechts.
 			Die Durchgänge sind in mehreren "Blöcken" gruppiert.
 			Vor jedem Block wird ein Buchstabe als "Zielbuchstabe" festgelegt.
-			In jedem Durchgang wird es Ihre Aufgabe sein, den Zielbuchstaben des aktiven Blockes wieder zu erkennen.
-			Anschließend, nach einem Kreuz, werden Ihnen zwei Buchstaben angezeigt, von denen einer der Zielbuchstabe ist.
+			In jedem Durchgang wird es Ihre Aufgabe sein, den Zielbuchstaben des aktuellen Blockes wiederzuerkennen.</p>
+			
+			<p>Am Anfang eines Durchganges wird Ihnen ein rotes Kreuz in der Mitte des Bildschirmes gezeigt.
+			Bitte richten Sie Ihren Blick auf das Kreuz, wann immer Sie es sehen.
+			Nach dem Kreuz werden Ihnen für einen sehr kurzen Zeitraum die zwei Buchstaben angezeigt, wobei immer einer von beiden der Zielbuchstabe ist.
 			Bitte nutzen Sie für links die X- oder für rechts die N-Taste um anzugeben, ob der Zielbuchstabe auf der linken oder rechten Seite zu sehen ist.<br>
 			Bitte entscheiden Sie so schnell und so genau wie möglich.
-			Denken Sie nicht zu viel über Ihre Entscheidung nach, sondern folgen Sie Ihrem Instinkt.</p>
-			<p>Nachdem Sie diese Instruktionen gelesen haben, drücken Sie bitte die rechte Pfeiltaste, um fortzufahren.</p>
+			Denken Sie nicht zu viel über Ihre Entscheidung nach, sondern folgen Sie Ihrem Instinkt.<br>
+			Sie können nach jedem Block gerne eine kurze Pause einlegen.</p>
+
+			<p>Nachdem Sie diese Instruktionen aufmerksam gelesen haben, drücken Sie bitte die rechte Pfeiltaste, um fortzufahren.</p>
 			`]
 	};
 	widgets.push(conf_instr);
