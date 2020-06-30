@@ -1,15 +1,7 @@
-function genConfBlocks(rand_indices, training=false) {
+function genConfBlocks(rand_indices, num_trials, training) {
   let blocks = [],
       fav_func = function(){},
-      num_blocks = 0,
-      trial_max = 0;
-  
-  if (training) {
-    trial_max = 10
-  }
-  else {
-    trial_max = 25
-  }
+      num_blocks = 0;
 
   num_blocks = rand_indices.length;
   
@@ -20,7 +12,7 @@ function genConfBlocks(rand_indices, training=false) {
     dist_alphabet = generateAlphabet();
     dist_alphabet = jsPsych.randomization.shuffle(dist_alphabet);  
 
-    for (let trial_i=0; trial_i<trial_max; trial_i++) {
+    for (let trial_i=0; trial_i<num_trials; trial_i++) {
       fav_func = function() {
         let two_letters = [],
             distractor = '',
@@ -59,6 +51,40 @@ function genConfBlocks(rand_indices, training=false) {
   return blocks
 }
 
+function genFeedback(num_blocks, num_trials, training=false) {
+  let feedbacks = [],
+      feedback_func = function() {};
+
+  for (let i=0; i<num_blocks; i++) {
+    feedback_func = function() {
+      let correct_values = [],
+          percentage_correct = 0,
+          sum_correct = 0,
+          feedback = '';
+
+      correct_values = jsPsych.data.get().select('correct').values.slice(-num_trials);
+      sum_correct = correct_values.reduce((partial_sum, a) => partial_sum + a, 0);
+      percentage_correct = sum_correct / num_trials;
+      if (!training) {
+        feedback = `
+              Sie haben den Zielbuchstaben in ${Math.round(100*percentage_correct)}% der Durchgänge dieses Blocks richtig erkannt.<br>
+              Drücken Sie die rechte Pfeiltaste, um fortzufahren.
+              `
+      }
+      else {
+        feedback = `
+              Sie haben das Zielzeichen in ${Math.round(100*percentage_correct)}% der Durchgänge dieses Blocks richtig erkannt.<br>
+              Drücken Sie die rechte Pfeiltaste, um fortzufahren.
+              `
+      }
+      
+      return [feedback];
+    }
+    feedbacks.push(feedback_func);
+  }
+  return feedbacks
+}
+
 function genInstructs(rand_indices, training=false) {
   let target_instructs = [],
       instruct_func = function(){},
@@ -76,7 +102,7 @@ function genInstructs(rand_indices, training=false) {
         instruct = `
           Dieser erste Block ist ein Trainings-Block.
           Da dies noch nicht das eigentliche Experiment ist, haben wir als Ziel keinen Buchstaben, sondern ein Zeichen ausgewählt.<br>
-          Das Zielzeichen für diese Runde ist "#"".<br>
+          Das Zielzeichen für diese Runde ist <b>#</b>.<br>
           Drücken Sie bitte die rechte Pfeiltaste, wenn Sie bereit sind, mit dem Experiment fortzufahren.
           `
       }
